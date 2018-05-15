@@ -17,9 +17,11 @@ const char* mqttPassword = "**********";
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-char msg_received[7]; // Solo debería recibir "Servo+90" o "Servo-90"
 
-void callback(char* topic, byte* payload, unsigned int length) { //Función que es llamada cuando se un mensaje llega.   
+char msg_received[7]; // Solo puede recibir "Servo+90" o "Servo-90"
+int flag=0; 
+
+void callback(char* topic, byte* payload, unsigned int length) { //Función que se llama cuando se un mensaje llega.   
 
   Serial.print("Message arrived in topic: ");
 
@@ -33,11 +35,21 @@ void callback(char* topic, byte* payload, unsigned int length) { //Función que 
   }
   Serial.println();
   Serial.println("-----------------------");
+  flag=0;
 
 }
 
-void setup() {
 
+/* SERVO */
+#define SERVO_PIN 18
+int freq = 50; //El servo trabaja a 50 Hz
+int channel = 0;
+int resolution = 10; //Resolución de 10 bits
+
+
+
+void setup() {
+  
   Serial.begin(115200);
   WiFi.begin(ssid, password);
 
@@ -68,26 +80,43 @@ void setup() {
   }
 
   client.subscribe("esp/test");
+
+  //Configuración del SERVO
+  ledcSetup(channel, freq, resolution);
+  ledcAttachPin(SERVO_PIN, channel);  
+  ledcWrite(channel, 61); //Para llevarlo a 90 
 }
 
- 
+
 
 void loop() {
 
   client.loop();
   
-  if(msg_received[0]=='H'){ //Actualmente, si el ultimo mensaje empieza por H, se repite todo el rato.
-    Serial.print("He pasado!: ");
+  //Controlar el servo
+  if(msg_received[0]=='1' && flag==0){ // 1 -> 26 = -90º
+    Serial.print("Moviendo servo a posición: ");
     Serial.println(msg_received);
+    ledcWrite(channel, 26);      
+    delay(1000);
+    flag=1;
   }
-//  int giro=0; //Probablemente esta variable se tenga que poner fuera para no resetearla (Probar con un codigo simple de en el loop poner i++;
-//  CAMBIAR TODO ESTO ->
-//  if (msg_received="Servo+90"){
-//  
-//    for(giro = 0;giro<MAX_PWN;giro++){
-//      
-//      analog.write(giro); //NO ES ASÍ !! SUBIR EL CODIGO A GITHUB PARA TENERLO ACCESIBLE
-//    } 
-//  }
+
+  if(msg_received[0]=='2' && flag==0){ // 2 -> 61 = 0º
+    Serial.print("Moviendo servo a posición: ");
+    Serial.println(msg_received);
+    ledcWrite(channel, 61);      
+    delay(1000);
+    flag=1;
+  }  
+
+  if(msg_received[0]=='3' && flag==0){ // 3 -> 123 = +90º
+    Serial.print("Moviendo servo a posición: ");
+    Serial.println(msg_received);
+    ledcWrite(channel, 123);      
+    delay(1000);
+    flag=1;
+  }   
+
 }
 
