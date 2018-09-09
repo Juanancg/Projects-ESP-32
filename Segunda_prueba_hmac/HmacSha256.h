@@ -1,12 +1,15 @@
 #include "mbedtls/md.h"
 
+char msg[67];
+char *mensaje1;
+char hash[65];
+char codigo[4];
+
 char mensaje[1000];
 
 char* compute_HMAC(char* key, char* payload){
 	
 	
-	//char *key = "secretKey";
-	//char *payload = "get";
 	byte hmacResult[32];
 
 	mbedtls_md_context_t ctx;
@@ -33,18 +36,52 @@ char* compute_HMAC(char* key, char* payload){
 		else{
 			strcat(mensaje, str);
 		}
-		// for(int z = 0; z < 3 ; z++){
-			// x = i*3 + z;
-			// mensaje[x] = str[z];
-			// Serial.print(mensaje[x]);
-		// }
 	  
 	}
 	
 	Serial.println();
-	strcat(mensaje,payload);
+	//strcat(mensaje,payload);
 	return (mensaje);
 
 }
 
+char* get_msg(char* msg_ds){ //ds=digital signature
 	
+	int longitud = strlen(msg_ds);
+	
+	for(int i = 64; i < longitud+1 ; i++){
+		
+		codigo[i-64]=msg_ds[i];
+
+	}	
+	
+	return(codigo);
+		
+}
+
+
+char* get_digital_sig(char* payload1){
+	
+	
+	int longitud = strlen(payload1);
+	
+	if (longitud<65) {return 0;}
+	else{
+	
+		for(int i=0; i<64;i++){
+			
+			hash[i]=payload1[i];
+		}	
+		hash[65]='\0';
+		return(hash);
+	}
+}
+
+bool comparacion(char *primero, char *segundo){
+
+	for(int i = 0; i < 64; i++){
+		
+		if( primero[i] != segundo[i]) return false;
+	}
+	return true;	
+}
