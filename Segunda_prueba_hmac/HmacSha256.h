@@ -1,8 +1,9 @@
 #include "mbedtls/md.h"
 
-char mensaje[67];
+char mensaje[1000];
 
 char* compute_HMAC(char* key, char* payload){
+	
 	
 	//char *key = "secretKey";
 	//char *payload = "get";
@@ -22,16 +23,27 @@ char* compute_HMAC(char* key, char* payload){
 	mbedtls_md_free(&ctx);
 
 
-
-	for(int i= 0; i< sizeof(hmacResult); i++){
-	  char str[3];
-
-	  sprintf(str, "%02x", (int)hmacResult[i]);
-
-	  strcat(mensaje, str);
+	
+	for(int i = 0; i< sizeof(hmacResult); i++){
+		char str[3];
+		int x = 0;
+		sprintf(str, "%02x", (int)hmacResult[i]);
+		
+		if(i==0){strcpy(mensaje,str);}
+		else{
+			strcat(mensaje, str);
+		}
+		// for(int z = 0; z < 3 ; z++){
+			// x = i*3 + z;
+			// mensaje[x] = str[z];
+			// Serial.print(mensaje[x]);
+		// }
+	  
 	}
-
-	return (strcat(mensaje,payload));
+	
+	Serial.println();
+	strcat(mensaje,payload);
+	return (mensaje);
 
 }
 
