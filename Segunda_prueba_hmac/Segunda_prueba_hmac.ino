@@ -22,7 +22,7 @@ void setup() {
   char *key1 = "secretKey1";
 
   /* CALCULAMOS EL HMAC DEL MENSAJE A ENVIAR */
-  mensaje = compute_HMAC(key1,payload);
+  mensaje = compute_HMAC(key,payload);
   strcat(mensaje,payload);
   Serial.println(mensaje);
 
