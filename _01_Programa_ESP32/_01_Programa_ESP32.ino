@@ -19,14 +19,14 @@ int fotodiodo_Value;
 
 
 /* WiFi */
-const char* ssid = "*************";
-const char* password =  "*************";
+const char* ssid = "TP-LINK_F3200A";
+const char* password =  "43491896";
 
 /* MQTT - Utilizando CloudMQTT */
-const char* mqttServer = "************";
-const int mqttPort = ******;
-const char* mqttUser = "**********";
-const char* mqttPassword = "**********";
+const char* mqttServer = "m20.cloudmqtt.com";
+const int mqttPort = 12834;
+const char* mqttUser = "rmqewpne";
+const char* mqttPassword = "kFlJMJ_jC5pk";
 
 void setup() {
   Serial.begin(115200);
@@ -37,15 +37,16 @@ void setup() {
   servo.setup();
   servo.write(10);  
 
-  sensor.mpu_init(sdaPin, sclPin);// sda, scl
-  sensor.mpu_calibrate();
+//  sensor.mpu_init(sdaPin, sclPin);// sda, scl
+//  sensor.mpu_calibrate();
 
   
 }
 
 void loop() {
   client.loop();
-  if(auth == 1 & flag_mensaje_recibido == 1){
+  if(auth == 1 & flag_msg_recibido == 1){
+    Serial.println(mensaje_recibido);
 	  
   }
 

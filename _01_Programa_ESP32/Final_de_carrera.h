@@ -1,3 +1,5 @@
+#ifndef FINAL_DE_CARRERA_H
+#define FINAL_DE_CARRERA_H
 #include "Sensor.h"
 
 class Final_de_carrera: public Sensor{
@@ -12,3 +14,4 @@ class Final_de_carrera: public Sensor{
 			return (value);
 		}
 };
+#endif

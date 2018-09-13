@@ -7,6 +7,7 @@ PubSubClient client;
 char mensaje[100];
 bool auth=0;
 int flag_msg_recibido = 0;
+char *mensaje_recibido;
 void init(const char* ssidd, const char* pswd, const char* mqtt_Server ,const int mqtt_Port ,const char* mqtt_Usr ,const char* mqtt_Pswd ){
 	
 	client.setClient(espClient);
@@ -64,7 +65,7 @@ void callback(char* topic, byte* payload, unsigned int length) { //Estas variabl
   Serial.println("-----------------------");
 
   //char *mensaje ; 
-  char *mensaje_recibido;
+  
   char *hmac_recibido;
   char *hmac_generado;
   char *key = "secretKey";

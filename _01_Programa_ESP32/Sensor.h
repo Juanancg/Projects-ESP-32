@@ -1,3 +1,5 @@
+#ifndef SENSOR_H
+#define SENSOR_H
 
 
 class Sensor{
@@ -19,3 +21,4 @@ class Sensor{
 			return pin;
 		}
 };
+#endif

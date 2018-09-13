@@ -1,3 +1,7 @@
+#ifndef HMACSHA256_H
+#define HMACSHA256_H
+
+
 #include "mbedtls/md.h"
 
 
@@ -85,3 +89,6 @@ bool comparacion(char *primero, char *segundo){
 	}
 	return true;	
 }
+
+
+#endif
