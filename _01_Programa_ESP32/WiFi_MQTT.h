@@ -4,10 +4,12 @@
 
 WiFiClient espClient;
 PubSubClient client;		
-char mensaje[100];
-bool auth=0;
+char mensaje_inicial[100];
+
 int flag_msg_recibido = 0;
-char *mensaje_recibido;
+
+
+
 void init(const char* ssidd, const char* pswd, const char* mqtt_Server ,const int mqtt_Port ,const char* mqtt_Usr ,const char* mqtt_Pswd ){
 	
 	client.setClient(espClient);
@@ -43,57 +45,17 @@ void init(const char* ssidd, const char* pswd, const char* mqtt_Server ,const in
 	client.subscribe("esp/test");
 }
 
-void callback(char* topic, byte* payload, unsigned int length) { //Estas variables son de este scope, no se pueden utilizar en otro lado
-  
-  flag_msg_recibido=0;
-  auth=0;
-  delay(100);
-  Serial.print("Message arrived in topic: ");
-  Serial.println(topic);
+void callback(char* topic, byte* payload, unsigned int length) { 
+   
+      //auth=0;
+      for (int i = 0; i < length; i++) {    
+        mensaje_inicial[i]=payload[i];
+        //Serial.print((char)payload[i]);
+      }
+      
+      //client.publish("esp/test1", "Mensaje recibido!");
+      flag_msg_recibido=1;
 
-  //Serial.print("Message:");
-  for (int i = 0; i < length; i++) {
-
-    mensaje[i]=payload[i];
-    Serial.print((char)payload[i]);
-  }
-  
-  client.publish("esp/test1", "Mensaje recibido!");
-  flag_msg_recibido=1;
-  delay(100);
-  Serial.println();
-  Serial.println("-----------------------");
-
-  //char *mensaje ; 
-  
-  char *hmac_recibido;
-  char *hmac_generado;
-  char *key = "secretKey";
-  
-    /*  EXTRAEMOS EL MENSAJE RECIBIDO */
-  mensaje_recibido = get_msg(mensaje);
-  Serial.println("El mensaje recibido es: ");  
-  Serial.print(mensaje_recibido);
-  Serial.print(" y tiene una longitud de:  ");  
-  Serial.print(strlen(mensaje_recibido));  
-
-  /* EXTRAEMOS LA FIRMA DIGITAL */
-  hmac_recibido = get_digital_sig(mensaje);
-  Serial.println();
-  Serial.println("El HMAC recibido es: ");
-  Serial.println(hmac_recibido);
-
-  /* GENERAMOS LA FIRMA DIGITAL QUE DEBERÍA SER */
-  hmac_generado  = compute_HMAC(key,mensaje_recibido);
-  Serial.println("El HMAC debería ser: ");
-  Serial.println(hmac_generado);
-  Serial.println();
-  
-  /* COMPARAMOS AMBAS FIRMAS */
-  auth = comparacion(hmac_recibido,hmac_generado);
-  if(auth == true) Serial.println( "Las firmas son iguales ! El mensaje es auténtico!");
-  else Serial.println( "Las firmas son diferentes! El mensaje no es auténtico! ");
- 
 }
 		
 

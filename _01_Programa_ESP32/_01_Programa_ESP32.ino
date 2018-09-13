@@ -3,11 +3,13 @@
 #include "HmacSha256.h"
 #include "MPU_6050.h"
 #include "Servomotor.h"
-#include "WiFI_MQTT.h"
+//#include "WiFI_MQTT.h"
+#include "Coordinador.h"
 
 /* VARIABLES */
+Coordinador coordinador;
 
-Servomotor servo(13); 
+Servomotor servo(13);
 
 int sdaPin = 26;
 int sclPin = 25;
@@ -17,7 +19,7 @@ MPU_6050 sensor;
 Fotodiodo fotodiodo1(36);
 int fotodiodo_Value;
 
-
+bool authenticacion = 0;
 /* WiFi */
 const char* ssid = "TP-LINK_F3200A";
 const char* password =  "43491896";
@@ -31,23 +33,26 @@ const char* mqttPassword = "kFlJMJ_jC5pk";
 void setup() {
   Serial.begin(115200);
 
-  init(ssid,password,mqttServer,mqttPort,mqttUser,mqttPassword);
+  init(ssid, password, mqttServer, mqttPort, mqttUser, mqttPassword);
   client.setCallback(callback);
-  
+
   servo.setup();
-  servo.write(10);  
+  servo.write(10);
 
-//  sensor.mpu_init(sdaPin, sclPin);// sda, scl
-//  sensor.mpu_calibrate();
+  //  sensor.mpu_init(sdaPin, sclPin);// sda, scl
+  //  sensor.mpu_calibrate();
 
-  
+
 }
 
 void loop() {
   client.loop();
-  if(auth == 1 & flag_msg_recibido == 1){
-    Serial.println(mensaje_recibido);
-	  
+  if (flag_msg_recibido == 1) {
+    authenticacion = coordinador.check_auth(mensaje_inicial);
+    if (authenticacion == 1) {
+      Serial.println(coordinador.mensaje_recibido);
+
+    }
   }
 
 }

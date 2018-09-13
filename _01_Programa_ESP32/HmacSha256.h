@@ -43,8 +43,8 @@ char* compute_HMAC(char* key, char* payload){
 	  
 	}
 	
-	Serial.println();
-	//strcat(mensaje1,payload);
+	
+	
 	return (mensaje1);
 
 }
